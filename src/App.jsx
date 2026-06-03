@@ -4,6 +4,7 @@ import Details from "./Components/Details";
 
 const App = () => {
   const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
 
@@ -16,8 +17,14 @@ const App = () => {
       "https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3",
     )
       .then((res) => res.json())
-      .then((data) => setCountries(data))
-      .catch(console.error);
+      .then((data) => {
+        setCountries(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -36,6 +43,16 @@ const App = () => {
       window.scrollTo(0, scrollPosition);
     }, 0);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-(--bg-color) text-(--text-color)">
+        <div className="rounded-xl bg-(--element-color) px-6 py-4 shadow">
+          Loading countries...
+        </div>
+      </div>
+    );
+  }
 
   if (selectedCountry) {
     return (
